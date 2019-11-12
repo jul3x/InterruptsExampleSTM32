@@ -45,7 +45,7 @@ int main() {
 
     __NOP();
 
-    // USART configuration
+    // Buttons configuration
     for (int i = 0; i < 7; ++i)
     {
         configure(&buttons[i]);
@@ -55,6 +55,7 @@ int main() {
     configureDMA();
     configureNVIC();
 
+    // USART Enabling
     USART2->CR1 |= USART_CR1_UE;
 
     // Main loop
@@ -72,10 +73,12 @@ void interrupt(uint16_t interr, uint16_t exti_line, Button *button)
 {
     if (interr & exti_line)
     {
+        uint16_t is_released = ((button->gpio->IDR >> button->pin) & 1) ^ button->is_reverse_logic;
+
         if ((DMA1_Stream6->CR & DMA_SxCR_EN) == 0 &&
             (DMA1->HISR & DMA_HISR_TCIF6) == 0)
         {
-            if (((button->gpio->IDR >> button->pin) & 1) ^ button->is_reverse_logic) {
+            if (is_released) {
                 DMA1_Stream6->M0AR = (uint32_t)button->released_str;
                 DMA1_Stream6->NDTR = strlen(button->released_str);
             }
@@ -87,7 +90,7 @@ void interrupt(uint16_t interr, uint16_t exti_line, Button *button)
         }
         else
         {
-            if (((button->gpio->IDR >> button->pin) & 1) ^ button->is_reverse_logic) {
+            if (is_released) {
                 enqueue(&tx_buffer, button->released_str);
             }
             else {

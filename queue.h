@@ -4,7 +4,7 @@
 typedef struct SQueue {
     int head;
     int tail;
-    char *buffer[1000];
+    char *buffer[1024];
 } Queue;
 
 void clear(Queue *queue);
