@@ -1,5 +1,5 @@
 # STM32InterruptsExample
-Repository contains examples of interrupts usage (i.e. for `UART` communication via `DMA`).
+Repository contains examples of interrupts usage (e.g. for `UART` communication via `DMA`).
 
 Examples were developed using `STM32F411xE` core and several additional electronic modules.
 
